@@ -13,6 +13,6 @@ class SignInPage(Page):
 
     def input_crendentials(self):
         self.input_text('aishwaryaganga.s@gmail.com', *self.EMAIL)
-        self.input_text('Mahalakshmi&1', *self.PASSWORD)
+        self.input_text('Test123', *self.PASSWORD)
         self.click(*self.CONTINUE)
 
