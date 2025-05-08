@@ -1,5 +1,7 @@
+from selenium.common import TimeoutException, ElementClickInterceptedException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 class Page:
 
@@ -19,6 +21,33 @@ class Page:
 
     def click(self, *locator):
         self.driver.find_element(*locator).click()
+
+    def clicks(self, by, locator, timeout=10):
+        try:
+            # Wait until the element is clickable
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.element_to_be_clickable((by, locator))
+            )
+
+            # Try to wait for Weglot language menu to disappear
+            try:
+                WebDriverWait(self.driver, 5).until(
+                    EC.invisibility_of_element_located((By.ID, "weglot-listbox"))
+                )
+            except TimeoutException:
+                print("[WARN] Weglot dropdown still visible — using JS click fallback.")
+
+            # Scroll into view
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+
+            # Try regular click
+            element.click()
+
+        except ElementClickInterceptedException:
+            print("[WARN] Click intercepted — retrying with JavaScript click.")
+            element = self.driver.find_element(by, locator)
+            self.driver.execute_script("arguments[0].click();", element)
+
 
     def input_text(self, text, *locator):
         self.driver.find_element(*locator).send_keys(text)

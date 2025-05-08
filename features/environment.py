@@ -13,9 +13,9 @@ def browser_init(context, scenario_name):
     """
     :param context: Behave context
     """
-    driver_path = ChromeDriverManager().install()
-    service = Service(driver_path)
-    context.driver = webdriver.Chrome(service=service)
+    # driver_path = ChromeDriverManager().install()
+    # service = Service(driver_path)
+    # context.driver = webdriver.Chrome(service=service)
 
     # driver_path = GeckoDriverManager().install()
     # service = Service(driver_path)
@@ -23,6 +23,12 @@ def browser_init(context, scenario_name):
 
     ### SAFARI ###
     # context.driver = webdriver.Safari()
+
+    mobile_emulation = {"deviceName": "Nexus 5"}
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+
+    context.driver = webdriver.Chrome(options=chrome_options)
 
     ### HEADLESS MODE ####
     # options = webdriver.ChromeOptions()
